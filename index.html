@@ -801,4 +801,1102 @@ label {
   <div class="tracking-panel" id="trackingPanel">
     <div class="live-banner">
       <div class="eta-row">
-        <div class="eta-big" id="etaDisplay">⏱️ Rider arriving in ~4
+        <div class="eta-big" id="etaDisplay">⏱️ Rider arriving in ~4 mins</div>
+        <div class="traffic-pill" id="trafficBadge">Moderate Traffic</div>
+      </div>
+      <div class="where-text" id="whereReachedText">📍 Rider moving towards your pickup point...</div>
+    </div>
+
+    <div id="liveMap"></div>
+
+    <div class="rider-header">
+      <div>
+        <div class="rider-name" id="riderName">🏍️ Ravi Kumar (Captain)</div>
+        <div class="rider-meta" id="riderBike">AN 01 Q 4821 • Honda Shine • ⭐ 4.9</div>
+      </div>
+      <div class="pin-pill" id="ridePinBadge">PIN: 4821</div>
+    </div>
+
+    <div id="tripSummary" style="margin-bottom:10px; font-size:13px; color:#E2E8F0;"></div>
+
+    <div class="rider-phone-row">
+      <span>📞 Rider Phone:</span>
+      <strong id="riderPhoneDisplay">+91 99332 45120</strong>
+    </div>
+
+    <div class="action-grid">
+      <a class="btn-action btn-call" id="callRiderBtn" href="tel:+919933245120">📞 Call</a>
+      <button class="btn-action btn-msg" type="button" onclick="toggleChat()">💬 In-App Msg</button>
+      <a class="btn-action btn-sms" id="smsRiderBtn" href="#">📩 Normal SMS</a>
+    </div>
+
+    <div class="chat-panel" id="chatPanel">
+      <div class="chat-title">
+        <span>Message Rider (In-App)</span>
+        <span style="cursor:pointer; color:#DC2626;" onclick="toggleChat()">✕</span>
+      </div>
+      <div class="chat-messages" id="chatMessages">
+        <div class="msg-bubble msg-rider">Rider: I am on the way to your pickup location.</div>
+      </div>
+      <div class="quick-chips">
+        <span class="chip" onclick="sendQuickMsg('I am waiting at the pickup point.')">At pickup point</span>
+        <span class="chip" onclick="sendQuickMsg('Please call me when you reach.')">Call me</span>
+        <span class="chip" onclick="sendQuickMsg('How much traffic on your route?')">Traffic?</span>
+      </div>
+      <div class="chat-input-row">
+        <input type="text" id="chatInput" placeholder="Type message to rider...">
+        <button class="chat-send" type="button" onclick="sendCustomMsg()">Send</button>
+      </div>
+    </div>
+
+    <a class="map-link" id="gmapRouteLink" href="#" target="_blank" rel="noopener noreferrer">🗺️ Open Full Route in Google Maps</a>
+  </div>
+
+  <button type="button" class="btn-secondary" onclick="logoutToLogin()">Switch Role / Logout</button>
+</section>
+
+<!-- 3B. Rider / Agent Mode Screen -->
+<section class="screen" id="riderScreen">
+  <div class="top-bar">
+    <div class="brand-small">Andaman <span>Ride</span></div>
+    <div class="badge" id="riderDutyBadge">Offline</div>
+  </div>
+
+  <h2>Rider / Agent Console</h2>
+  <p class="sub">Pre-paid wallet recharge se cash commission secure rehta hai. Weekly settlement cycle active.</p>
+
+  <div class="wallet-banner">
+    <div style="font-size:12px; color:#CBD5E1;">Agent Security / Recharge Wallet</div>
+    <div class="wallet-bal" id="riderWalletBal">₹500</div>
+    <div style="font-size:12px; color:var(--mint);">Weekly Settlement: Every Monday • Cash dues auto-deducted from wallet</div>
+  </div>
+
+  <!-- Live Photo + 3-Second Video Capture -->
+  <div class="card" id="liveVerifyCard">
+    <div style="font-weight: 800; font-size: 14px; color: var(--navy); margin-bottom: 4px;">
+      🎥 Live Registration Photo & 3-Sec Video
+    </div>
+    <div style="font-size: 12px; color: var(--muted); margin-bottom: 10px;">
+      Capture a live selfie photo and a 3-second live video during registration for verification.
+    </div>
+
+    <video id="liveCamPreview" autoplay playsinline muted style="width:100%; max-height:210px; border-radius:10px; background:#0B1F2A; display:none; margin-bottom:10px;"></video>
+
+    <div id="verifyTimerText" style="font-size:12px; font-weight:700; color:var(--green); margin-bottom:8px;"></div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+      <button type="button" class="btn-primary" style="padding:11px; font-size:13px;" onclick="startLiveVideoAndPhoto()">
+        ▶️ Record 3s Video + Photo
+      </button>
+      <button type="button" class="btn-secondary" style="margin-top:0; padding:11px; font-size:13px;" onclick="resetLiveCapture()">
+        🔄 Retake
+      </button>
+    </div>
+
+    <div id="capturedMediaBox" style="display:none; margin-top:12px; background:#F8FAFC; border:1px solid var(--grey); border-radius:10px; padding:10px;">
+      <div style="font-size:12px; font-weight:700; color:var(--navy); margin-bottom:6px;">✅ Captured & Ready for Registration</div>
+      <img id="capturedPhotoImg" alt="Captured Registration Photo" style="width:96px; height:96px; object-fit:cover; border-radius:8px; border:1px solid var(--grey); margin-right:8px; vertical-align:top;">
+      <video id="capturedVideoPlay" controls playsinline style="width:165px; height:96px; object-fit:cover; border-radius:8px; background:#000; vertical-align:top;"></video>
+    </div>
+  </div>
+
+  <!-- Rider RC Book, License & Aadhaar Verification Card -->
+  <div class="card" id="riderKycCard">
+    <div style="font-weight: 800; font-size: 14px; color: var(--navy); margin-bottom: 4px;">
+      🪪 Rider Vehicle, License & Aadhaar Verification
+    </div>
+    <div style="font-size: 12px; color: var(--muted); margin-bottom: 12px;">
+      Upload RC Book & Driving License photos with their numbers below, and complete Aadhaar OTP verification.
+    </div>
+
+    <label for="rcBookPhotoInput">📄 1. RC Book Photo</label>
+    <div class="input-box" style="padding: 8px 12px; margin-bottom: 8px;">
+      <input type="file" id="rcBookPhotoInput" accept="image/*" capture="environment" onchange="previewKycImage(this, 'rcBookPhotoPreview')">
+    </div>
+    <img id="rcBookPhotoPreview" alt="RC Book Preview" style="display:none; width:100%; max-height:150px; object-fit:cover; border-radius:10px; margin-bottom:10px; border:1px solid var(--grey);">
+
+    <label for="vehicleRegInput">Vehicle / Registration Number (नीचे नंबर लिखें)</label>
+    <div class="input-box">
+      <input type="text" id="vehicleRegInput" placeholder="e.g. AN 01 Q 4821">
+    </div>
+
+    <label for="dlPhotoInput">🪪 2. Driving License Photo</label>
+    <div class="input-box" style="padding: 8px 12px; margin-bottom: 8px;">
+      <input type="file" id="dlPhotoInput" accept="image/*" capture="environment" onchange="previewKycImage(this, 'dlPhotoPreview')">
+    </div>
+    <img id="dlPhotoPreview" alt="Driving License Preview" style="display:none; width:100%; max-height:150px; object-fit:cover; border-radius:10px; margin-bottom:10px; border:1px solid var(--grey);">
+
+    <label for="dlNumberInput">Driving License Number (नीचे नंबर लिखें)</label>
+    <div class="input-box">
+      <input type="text" id="dlNumberInput" placeholder="Enter Driving License number">
+    </div>
+
+    <label for="aadhaarNumberInput">🔐 3. Aadhaar Number (with OTP Verification)</label>
+    <div class="input-box">
+      <input type="tel" id="aadhaarNumberInput" maxlength="14" placeholder="Enter 12-digit Aadhaar number">
+    </div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:10px;">
+      <button type="button" class="btn-secondary" style="margin-top:0; padding:10px; font-size:12px;" onclick="sendAadhaarOtp()">
+        Send Aadhaar OTP
+      </button>
+      <input type="tel" id="aadhaarOtpInput" maxlength="6" placeholder="Enter OTP"
+        style="padding:10px; border:1px solid var(--grey); border-radius:10px; text-align:center; font-size:14px; outline:none;">
+    </div>
+
+    <button type="button" class="btn-secondary" id="verifyAadhaarBtn" style="margin-top:0; margin-bottom:12px; padding:10px; font-size:12px; background:#DCFCE7; color:#065F46;" onclick="verifyAadhaarOtp()">
+      Verify Aadhaar OTP
+    </button>
+
+    <button type="button" class="btn-primary" style="background:var(--navy);" onclick="saveRiderKycDetails()">
+      Submit All Verification Details
+    </button>
+
+    <div id="kycSaveStatus" style="margin-top:10px; font-size:12px; font-weight:700; color:var(--green);"></div>
+  </div>
+
+  <div class="card">
+    <label>Duty Status</label>
+    <button type="button" class="btn-primary" id="dutyToggleBtn" onclick="toggleRiderDuty()">Go Online for Rides</button>
+
+    <hr style="border:none; border-top:1px solid var(--grey); margin:16px 0;">
+
+    <label for="rechargeAmt">Agent Login / Wallet Recharge (₹)</label>
+    <select id="rechargeAmt" class="pay-select">
+      <option value="200">₹200 Recharge</option>
+      <option value="500" selected>₹500 Recharge</option>
+      <option value="1000">₹1,000 Recharge</option>
+    </select>
+    <button type="button" class="btn-primary" style="background:var(--navy);" onclick="rechargeRiderWallet()">Recharge Agent Wallet</button>
+  </div>
+
+  <div class="card" id="riderIncomingBox">
+    <div style="font-weight:800; font-size:15px; color:var(--navy); margin-bottom:6px;">Latest Ride Alert</div>
+    <div id="riderAlertText" style="font-size:13px; color:var(--muted);">
+      Go Online to receive South Andaman bike ride requests.
+    </div>
+  </div>
+
+  <button type="button" class="btn-secondary" onclick="logoutToLogin()">Switch Role / Logout</button>
+</section>
+
+<!-- 3C. Proprietor / Admin Screen -->
+<section class="screen" id="adminScreen">
+  <div class="top-bar">
+    <div class="brand-small">Andaman <span>Ride</span></div>
+    <div class="badge">Proprietor Admin</div>
+  </div>
+
+  <h2>Owner Revenue & Settlement</h2>
+  <p class="sub">Rule: Har ₹100 ride base par Owner ko ₹10 Net milna chahiye. Gateway fee alag se customer bill mein judti hai.</p>
+
+  <div class="card">
+    <label for="simBaseFare">Test Base Ride Fare (₹)</label>
+    <div class="input-box">
+      <input type="number" id="simBaseFare" value="100" min="10" oninput="recalcSplit()">
+    </div>
+
+    <label for="simGatewayFee">UPI / Bank Gateway Fee (₹ — try ₹3, ₹14, or ₹15)</label>
+    <div class="input-box">
+      <input type="number" id="simGatewayFee" value="14" min="0" oninput="recalcSplit()">
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat-box">
+        <div class="stat-label">Owner Net Commission (10%)</div>
+        <div class="stat-val stat-owner" id="calcOwnerNet">₹10</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">Rider Share (90% of Base)</div>
+        <div class="stat-val" id="calcRiderShare">₹90</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">Gateway Fee (Pass-through)</div>
+        <div class="stat-val" id="calcGateway">₹14</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">Customer Total Payable</div>
+        <div class="stat-val" id="calcCustomerTotal">₹114</div>
+      </div>
+    </div>
+
+    <div class="info-hint" style="margin-bottom:0;">
+      <strong>Weekly Settlement:</strong> Online UPI rides ka rider share weekly cycle mein settle hota hai, aur Cash rides ka ₹10/₹100 commission rider ke pre-paid wallet se adjust hota hai.
+    </div>
+  </div>
+
+  <button type="button" class="btn-secondary" onclick="logoutToLogin()">Switch Role / Logout</button>
+</section>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+const localAndamanPlaces = [
+  { name: "Aberdeen Bazaar", area: "Sri Vijaya Puram • South Andaman", lat: 11.6683, lng: 92.7378 },
+  { name: "Clock Tower (Aberdeen)", area: "Aberdeen Bazaar • Sri Vijaya Puram", lat: 11.6686, lng: 92.7385 },
+  { name: "G.B. Pant Hospital", area: "Atlanta Point • Sri Vijaya Puram", lat: 11.6714, lng: 92.7429 },
+  { name: "Junglighat", area: "Sri Vijaya Puram • South Andaman", lat: 11.6521, lng: 92.7265 },
+  { name: "Bathubasti", area: "Sri Vijaya Puram • South Andaman", lat: 11.6305, lng: 92.7176 },
+  { name: "Dollygunj", area: "Sri Vijaya Puram • South Andaman", lat: 11.6382, lng: 92.7152 },
+  { name: "Garacharma", area: "Sri Vijaya Puram • South Andaman", lat: 11.6168, lng: 92.7058 },
+  { name: "Prothrapur", area: "Sri Vijaya Puram • South Andaman", lat: 11.6104, lng: 92.7131 },
+  { name: "Delanipur", area: "Sri Vijaya Puram • South Andaman", lat: 11.6695, lng: 92.7248 },
+  { name: "Goalghar", area: "Sri Vijaya Puram • South Andaman", lat: 11.6612, lng: 92.7289 },
+  { name: "Veer Savarkar International Airport", area: "Lamba Line • Sri Vijaya Puram", lat: 11.6412, lng: 92.7297 },
+  { name: "Cellular Jail", area: "Atlanta Point • Sri Vijaya Puram", lat: 11.6740, lng: 92.7471 },
+  { name: "Corbyn's Cove Beach", area: "South Point • Sri Vijaya Puram", lat: 11.6419, lng: 92.7463 },
+  { name: "Phoenix Bay Jetty", area: "Sri Vijaya Puram • South Andaman", lat: 11.6725, lng: 92.7324 },
+  { name: "Chatham Jetty", area: "Chatham Island • South Andaman", lat: 11.6878, lng: 92.7229 },
+  { name: "Haddo", area: "Sri Vijaya Puram • South Andaman", lat: 11.6791, lng: 92.7215 },
+  { name: "Sippighat", area: "South Andaman • 744105", lat: 11.6015, lng: 92.6902 },
+  { name: "Chouldari", area: "South Andaman • 744103", lat: 11.6267, lng: 92.6654 },
+  { name: "Wandoor Beach / Jetty", area: "South Andaman • 744103", lat: 11.5956, lng: 92.6177 },
+  { name: "Bambooflat Jetty", area: "Ferrargunj • South Andaman", lat: 11.7032, lng: 92.7165 },
+  { name: "Ferrargunj", area: "South Andaman • 744206", lat: 11.7214, lng: 92.6548 }
+];
+
+const demoRiders = [
+  { name: "Ravi Kumar", bike: "AN 01 Q 4821 • Honda Shine", rating: "4.9", phone: "+919933245120", displayPhone: "+91 99332 45120" },
+  { name: "Suresh Nair", bike: "AN 01 M 7194 • Hero Splendor+", rating: "4.8", phone: "+919434281904", displayPhone: "+91 94342 81904" },
+  { name: "Arjun Das", bike: "AN 01 P 3309 • Bajaj Pulsar 125", rating: "4.9", phone: "+919679512840", displayPhone: "+91 96795 12840" }
+];
+
+let currentRole = "customer";
+let otpSent = false;
+let selectedPickup = null;
+let selectedDrop = null;
+let searchTimer = null;
+let liveMap = null;
+let riderMarker = null;
+let moveInterval = null;
+let riderWallet = 500;
+let riderOnline = false;
+let aadhaarOtpSent = false;
+let isAadhaarVerified = false;
+let camStream = null;
+let mediaRecorder = null;
+let recordedChunks = [];
+let registrationVerifiedMedia = { photoDataUrl: null, videoBlob: null };
+
+setTimeout(function() {
+  document.getElementById("splash").style.display = "none";
+  document.getElementById("loginScreen").style.display = "block";
+}, 2400);
+
+function openRoleScreen(role, labelText) {
+  document.getElementById("loginScreen").style.display = "none";
+  if (role === "rider") {
+    document.getElementById("riderScreen").style.display = "block";
+  } else if (role === "admin") {
+    document.getElementById("adminScreen").style.display = "block";
+    recalcSplit();
+  } else {
+    if (labelText) document.getElementById("custBadge").innerText = labelText;
+    document.getElementById("customerScreen").style.display = "block";
+  }
+}
+
+function switchRole(role) {
+  currentRole = role;
+  otpSent = false;
+  document.getElementById("otpSection").style.display = "none";
+  document.getElementById("authBtn").innerText = "Send OTP";
+
+  document.getElementById("tabCustomer").classList.toggle("active", role === "customer");
+  document.getElementById("tabRider").classList.toggle("active", role === "rider");
+  document.getElementById("tabAdmin").classList.toggle("active", role === "admin");
+
+  if (role === "admin") {
+    document.getElementById("loginRoleBadge").innerText = "Admin Login";
+    document.getElementById("phoneAuthForm").style.display = "none";
+    document.getElementById("adminAuthForm").style.display = "block";
+  } else {
+    document.getElementById("phoneAuthForm").style.display = "block";
+    document.getElementById("adminAuthForm").style.display = "none";
+    if (role === "customer") {
+      document.getElementById("loginRoleBadge").innerText = "Customer Login";
+      document.getElementById("authTitle").innerText = "Customer Login";
+      document.getElementById("authSub").innerText = "Book bike rides across South Andaman.";
+    } else {
+      document.getElementById("loginRoleBadge").innerText = "Rider / Agent Login";
+      document.getElementById("authTitle").innerText = "Rider / Agent Login";
+      document.getElementById("authSub").innerText = "Manage pre-paid wallet recharge & accept rides.";
+    }
+  }
+}
+
+async function handleGoogleSignIn() {
+  const btn = document.getElementById("googleLoginBtn");
+  const roleToUse = currentRole === "rider" ? "rider" : "customer";
+
+  if (!window.arFirebase || typeof window.arFirebase.loginWithGoogle !== "function") {
+    alert("Firebase abhi load ho raha hai, ek second baad dobara dabayein.");
+    return;
+  }
+
+  try {
+    if (btn) btn.innerText = "Google se sign-in ho raha hai...";
+    const user = await window.arFirebase.loginWithGoogle(roleToUse);
+    if (user) {
+      openRoleScreen(roleToUse, user.displayName || user.email || "Google User");
+    }
+  } catch (err) {
+    alert("Google Sign-In Error: " + (err && err.message ? err.message : err));
+  } finally {
+    if (btn) btn.innerText = "Continue with Google";
+  }
+}
+
+function handlePhoneAuth() {
+  const mobile = document.getElementById("mobile").value.trim();
+  const otpSection = document.getElementById("otpSection");
+  const authBtn = document.getElementById("authBtn");
+
+  if (!/^[6-9][0-9]{9}$/.test(mobile)) {
+    alert("कृपया सही 10 अंकों का मोबाइल नंबर डालें।");
+    return;
+  }
+
+  if (!otpSent) {
+    otpSent = true;
+    otpSection.style.display = "block";
+    authBtn.innerText = "Verify OTP & Continue";
+    return;
+  }
+
+  const otp = document.getElementById("otpInput").value.trim();
+  if (!/^[0-9]{4,6}$/.test(otp)) {
+    alert("कृपया 4 से 6 अंकों का OTP डालें (जैसे 123456)।");
+    return;
+  }
+
+  if (window.arFirebase && window.arFirebase.auth && window.arFirebase.auth.currentUser && typeof window.arFirebase.saveUserProfile === "function") {
+    window.arFirebase.saveUserProfile(window.arFirebase.auth.currentUser, currentRole).catch(() => {});
+  }
+
+  openRoleScreen(currentRole, "+91 " + mobile);
+}
+
+function handleAdminAuth() {
+  const pass = document.getElementById("adminPass").value.trim();
+  const pin = document.getElementById("adminPin").value.trim();
+
+  if (!pass) {
+    alert("कृपया Owner Password डालें।");
+    return;
+  }
+  if (pin !== "202608") {
+    alert("Security Code गलत है (Demo code: 202608)।");
+    return;
+  }
+
+  openRoleScreen("admin");
+}
+
+function logoutToLogin() {
+  if (moveInterval) clearInterval(moveInterval);
+  stopCameraStream();
+  if (window.arFirebase && typeof window.arFirebase.logoutUser === "function") {
+    window.arFirebase.logoutUser().catch(() => {});
+  }
+  document.getElementById("customerScreen").style.display = "none";
+  document.getElementById("riderScreen").style.display = "none";
+  document.getElementById("adminScreen").style.display = "none";
+  document.getElementById("loginScreen").style.display = "block";
+  switchRole("customer");
+}
+
+function getAndamanRatePerKm(useNightTest = false) {
+  const now = new Date();
+  const hour = now.getHours();
+  const isNight = useNightTest ? true : (hour >= 20 || hour < 5);
+
+  const dayRatePerKm = 50;
+  const nightMultiplier = 1.25;
+  const ratePerKm = isNight ? Math.round(dayRatePerKm * nightMultiplier) : dayRatePerKm;
+
+  return { isNight, ratePerKm };
+}
+
+function onPlaceInput(type) {
+  const rawQuery = document.getElementById(type + "Input").value.trim();
+  if (type === "pickup") selectedPickup = null;
+  if (type === "drop") selectedDrop = null;
+
+  const qLower = rawQuery.toLowerCase();
+  const localMatches = localAndamanPlaces.filter(p =>
+    !qLower || p.name.toLowerCase().includes(qLower) || p.area.toLowerCase().includes(qLower)
+  );
+
+  renderSuggestions(type, localMatches, rawQuery);
+
+  clearTimeout(searchTimer);
+  if (rawQuery.length >= 2) {
+    document.getElementById("searchStatus").innerText = "Searching live map places...";
+    searchTimer = setTimeout(() => fetchLivePlaces(type, rawQuery, localMatches), 450);
+  } else {
+    document.getElementById("searchStatus").innerText = "Live Map Search ready • South Andaman";
+  }
+}
+
+async function fetchLivePlaces(type, rawQuery, localMatches) {
+  try {
+    const url = `https://nominatim.openstreetmap.org/search?format=json&limit=6&countrycodes=in&viewbox=92.55,11.85,92.85,11.45&bounded=1&q=${encodeURIComponent(rawQuery)}`;
+    const res = await fetch(url, { headers: { "Accept": "application/json" } });
+    if (!res.ok) throw new Error("Network response not ok");
+    const data = await res.json();
+
+    const apiPlaces = data.map(item => {
+      const parts = (item.display_name || "").split(",");
+      return {
+        name: parts[0].trim(),
+        area: parts.slice(1, 3).join(",").trim() || "South Andaman",
+        lat: parseFloat(item.lat),
+        lng: parseFloat(item.lon)
+      };
+    });
+
+    const combined = [...apiPlaces];
+    localMatches.forEach(lp => {
+      if (!combined.some(cp => cp.name.toLowerCase() === lp.name.toLowerCase())) {
+        combined.push(lp);
+      }
+    });
+
+    document.getElementById("searchStatus").innerText =
+      combined.length > 0 ? `Found ${combined.length} matching places` : "No exact match — tap Custom option";
+    renderSuggestions(type, combined, rawQuery);
+  } catch (err) {
+    document.getElementById("searchStatus").innerText = "Showing South Andaman list & custom option";
+    renderSuggestions(type, localMatches, rawQuery);
+  }
+}
+
+function renderSuggestions(type, list, rawQuery) {
+  const listDiv = document.getElementById(type + "List");
+  listDiv.innerHTML = "";
+
+  if (rawQuery.length >= 2) {
+    const customItem = document.createElement("div");
+    customItem.className = "sug-item";
+    customItem.style.background = "#F0FDF4";
+    customItem.innerHTML = `<div class="sug-title">🔍 Use "${rawQuery}"</div><div class="sug-area">Custom Place / Landmark • South Andaman</div>`;
+    customItem.onclick = function() {
+      selectPlace(type, {
+        name: rawQuery,
+        area: "Custom Location • South Andaman",
+        isCustom: true,
+        lat: 11.6683,
+        lng: 92.7378
+      });
+    };
+    listDiv.appendChild(customItem);
+  }
+
+  list.slice(0, 8).forEach(place => {
+    const item = document.createElement("div");
+    item.className = "sug-item";
+    item.innerHTML = `<div class="sug-title">📍 ${place.name}</div><div class="sug-area">${place.area}</div>`;
+    item.onclick = function() {
+      selectPlace(type, place);
+    };
+    listDiv.appendChild(item);
+  });
+
+  listDiv.style.display = "block";
+}
+
+function selectPlace(type, place) {
+  document.getElementById(type + "Input").value = place.name;
+  document.getElementById(type + "List").style.display = "none";
+  if (type === "pickup") selectedPickup = place;
+  if (type === "drop") selectedDrop = place;
+  updateFare();
+}
+
+function getDistanceKm(lat1, lon1, lat2, lon2) {
+  const R = 6371;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return Math.max(1.5, R * c * 1.25).toFixed(1);
+}
+
+function updateFare() {
+  const simNight = document.getElementById("nightSimToggle").checked;
+  const { isNight, ratePerKm } = getAndamanRatePerKm(simNight);
+
+  document.getElementById("rateRuleText").innerText = isNight
+    ? `🌙 Night Surge Active (>8 PM): ₹${ratePerKm}/km`
+    : `☀️ Andaman Day Rate (<8 PM): ₹${ratePerKm}/km`;
+
+  if (!selectedPickup || !selectedDrop) return;
+  if (selectedPickup.name.toLowerCase() === selectedDrop.name.toLowerCase()) {
+    document.getElementById("distText").innerText = "Pickup & Drop cannot be same";
+    document.getElementById("fareText").innerText = "₹0";
+    return;
+  }
+
+  const km = parseFloat(getDistanceKm(
+    selectedPickup.lat, selectedPickup.lng,
+    selectedDrop.lat, selectedDrop.lng
+  ));
+  const fare = Math.round(km * ratePerKm);
+
+  document.getElementById("distText").innerText = `Est. Distance: ~${km} km`;
+  document.getElementById("fareText").innerText = "₹" + fare;
+}
+
+function bookRide() {
+  const pText = document.getElementById("pickupInput").value.trim();
+  const dText = document.getElementById("dropInput").value.trim();
+
+  if (!selectedPickup && pText.length >= 2) {
+    selectedPickup = { name: pText, isCustom: true, lat: 11.6683, lng: 92.7378 };
+  }
+  if (!selectedDrop && dText.length >= 2) {
+    selectedDrop = { name: dText, isCustom: true, lat: 11.6521, lng: 92.7265 };
+  }
+
+  updateFare();
+
+  if (!selectedPickup || !selectedDrop) {
+    alert("कृपया Pickup और Destination डालें।");
+    return;
+  }
+  if (selectedPickup.name.toLowerCase() === selectedDrop.name.toLowerCase()) {
+    alert("Pickup और Destination अलग-अलग डालें।");
+    return;
+  }
+
+  const payment = document.getElementById("payment").value;
+  const simNight = document.getElementById("nightSimToggle").checked;
+  const kmVal = parseFloat(getDistanceKm(
+    selectedPickup.lat, selectedPickup.lng,
+    selectedDrop.lat, selectedDrop.lng
+  ));
+  const fareObj = (window.arFirebase && typeof window.arFirebase.calculateAndamanFare === "function")
+    ? window.arFirebase.calculateAndamanFare(kmVal, simNight ? new Date("2026-11-24T21:30:00") : new Date())
+    : null;
+
+  const fare = fareObj ? "₹" + fareObj.totalFare : document.getElementById("fareText").innerText;
+  const dist = `Est. Distance: ~${kmVal} km`;
+  const pin = Math.floor(1000 + Math.random() * 9000);
+  const rider = demoRiders[Math.floor(Math.random() * demoRiders.length)];
+
+  document.getElementById("fareText").innerText = fare;
+  document.getElementById("distText").innerText = dist;
+  document.getElementById("riderName").innerText = `🏍️ ${rider.name} (Captain)`;
+  document.getElementById("riderBike").innerText = `${rider.bike} • ⭐ ${rider.rating}`;
+  document.getElementById("ridePinBadge").innerText = `PIN: ${pin}`;
+  document.getElementById("riderPhoneDisplay").innerText = rider.displayPhone;
+  document.getElementById("callRiderBtn").href = `tel:${rider.phone}`;
+
+  const smsText = encodeURIComponent(
+    `Andaman Ride: Pickup ${selectedPickup.name}, Drop ${selectedDrop.name}, PIN ${pin}.`
+  );
+  document.getElementById("smsRiderBtn").href = `sms:${rider.phone}?body=${smsText}`;
+
+  document.getElementById("tripSummary").innerHTML =
+    `🟢 <b>Pickup:</b> ${selectedPickup.name}<br>` +
+    `🔴 <b>Drop:</b> ${selectedDrop.name}<br>` +
+    `📏 ${dist} | <b>Fare:</b> ${fare} (${payment})`;
+
+  const originQuery = encodeURIComponent(selectedPickup.name + ", South Andaman");
+  const destQuery = encodeURIComponent(selectedDrop.name + ", South Andaman");
+  document.getElementById("gmapRouteLink").href =
+    `https://www.google.com/maps/dir/?api=1&origin=${originQuery}&destination=${destQuery}&travelmode=two-wheeler`;
+
+  document.getElementById("riderAlertText").innerHTML =
+    `New Ride: <b>${selectedPickup.name}</b> → <b>${selectedDrop.name}</b> (${fare}, ${payment}) • PIN: <b>${pin}</b>`;
+
+  if (window.arFirebase && typeof window.arFirebase.saveRideRecord === "function") {
+    window.arFirebase.saveRideRecord({
+      pickup: selectedPickup.name,
+      drop: selectedDrop.name,
+      distanceKm: kmVal,
+      paymentMethod: payment,
+      pin,
+      riderName: rider.name,
+      nightSurgeSimulated: simNight
+    }).then(() => {
+      console.log("Ride saved to Firestore");
+    }).catch((err) => {
+      console.warn("Firestore ride save skipped/failed:", err);
+    });
+  }
+
+  document.getElementById("trackingPanel").style.display = "block";
+  startLiveMapAndSimulation(selectedPickup, selectedDrop, rider.name);
+}
+
+function startLiveMapAndSimulation(pickup, drop, riderName) {
+  if (moveInterval) clearInterval(moveInterval);
+
+  const startLat = pickup.lat - 0.0085;
+  const startLng = pickup.lng - 0.0075;
+
+  setTimeout(() => {
+    if (!liveMap) {
+      liveMap = L.map("liveMap").setView([pickup.lat, pickup.lng], 14);
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: "&copy; OpenStreetMap"
+      }).addTo(liveMap);
+    } else {
+      liveMap.eachLayer(layer => {
+        if (!(layer instanceof L.TileLayer)) liveMap.removeLayer(layer);
+      });
+      liveMap.setView([pickup.lat, pickup.lng], 14);
+    }
+
+    L.circleMarker([pickup.lat, pickup.lng], { radius: 8, color: "#10B981", fillOpacity: 0.9 })
+      .addTo(liveMap).bindPopup("Pickup: " + pickup.name);
+
+    L.circleMarker([drop.lat, drop.lng], { radius: 8, color: "#EF4444", fillOpacity: 0.9 })
+      .addTo(liveMap).bindPopup("Drop: " + drop.name);
+
+    L.polyline([[startLat, startLng], [pickup.lat, pickup.lng], [drop.lat, drop.lng]], {
+      color: "#38BDF8",
+      weight: 4,
+      dashArray: "6, 6"
+    }).addTo(liveMap);
+
+    riderMarker = L.circleMarker([startLat, startLng], {
+      radius: 9,
+      color: "#FFFFFF",
+      fillColor: "#F59E0B",
+      fillOpacity: 1,
+      weight: 3
+    }).addTo(liveMap).bindPopup("🏍️ " + riderName);
+
+    liveMap.invalidateSize();
+
+    const checkpoints = [
+      { eta: "~4 mins away", traffic: "Moderate Traffic", low: false, msg: `${riderName} is approaching ${pickup.name} via main road.` },
+      { eta: "~3 mins away", traffic: "Moderate Traffic", low: false, msg: `${riderName} passed nearby junction, heading to ${pickup.name}.` },
+      { eta: "~1 min away", traffic: "Light Traffic", low: true, msg: `${riderName} is almost at ${pickup.name}. Keep your Ride PIN ready.` },
+      { eta: "Arrived!", traffic: "Light Traffic", low: true, msg: `${riderName} has reached ${pickup.name}! Share PIN to start ride.` }
+    ];
+
+    let step = 0;
+    const updateStep = () => {
+      const idx = Math.min(step, checkpoints.length - 1);
+      const progress = idx / (checkpoints.length - 1);
+
+      const curLat = startLat + (pickup.lat - startLat) * progress;
+      const curLng = startLng + (pickup.lng - startLng) * progress;
+
+      riderMarker.setLatLng([curLat, curLng]);
+      liveMap.panTo([curLat, curLng]);
+
+      const cp = checkpoints[idx];
+      document.getElementById("etaDisplay").innerText = "⏱️ " + cp.eta;
+      document.getElementById("whereReachedText").innerText = "📍 " + cp.msg;
+
+      const tBadge = document.getElementById("trafficBadge");
+      tBadge.innerText = cp.traffic;
+      tBadge.className = cp.low ? "traffic-pill traffic-low" : "traffic-pill";
+
+      step++;
+      if (step >= checkpoints.length) clearInterval(moveInterval);
+    };
+
+    updateStep();
+    moveInterval = setInterval(updateStep, 3000);
+  }, 150);
+}
+
+function toggleRiderDuty() {
+  riderOnline = !riderOnline;
+  const badge = document.getElementById("riderDutyBadge");
+  const btn = document.getElementById("dutyToggleBtn");
+  if (riderOnline) {
+    badge.innerText = "Online • South Andaman";
+    badge.style.background = "#10B981";
+    badge.style.color = "#FFFFFF";
+    btn.innerText = "Go Offline";
+    btn.style.background = "#DC2626";
+  } else {
+    badge.innerText = "Offline";
+    badge.style.background = "#DCFCE7";
+    badge.style.color = "#065F46";
+    btn.innerText = "Go Online for Rides";
+    btn.style.background = "var(--green)";
+  }
+}
+
+function rechargeRiderWallet() {
+  const amt = parseInt(document.getElementById("rechargeAmt").value, 10) || 0;
+  riderWallet += amt;
+  document.getElementById("riderWalletBal").innerText = "₹" + riderWallet;
+  alert(`₹${amt} Agent Wallet में जुड़ गए हैं। नया बैलेंस: ₹${riderWallet}`);
+}
+
+function recalcSplit() {
+  const base = Math.max(0, parseFloat(document.getElementById("simBaseFare").value) || 0);
+  const gatewayFee = Math.max(0, parseFloat(document.getElementById("simGatewayFee").value) || 0);
+
+  const ownerNet = Math.round(base * 0.10);
+  const riderShare = Math.max(0, Math.round(base - ownerNet));
+  const customerTotal = Math.round(base + gatewayFee);
+
+  document.getElementById("calcOwnerNet").innerText = "₹" + ownerNet;
+  document.getElementById("calcRiderShare").innerText = "₹" + riderShare;
+  document.getElementById("calcGateway").innerText = "₹" + Math.round(gatewayFee);
+  document.getElementById("calcCustomerTotal").innerText = "₹" + customerTotal;
+}
+
+function toggleChat() {
+  const panel = document.getElementById("chatPanel");
+  panel.style.display = panel.style.display === "block" ? "none" : "block";
+}
+
+function appendChatMessage(text, sender) {
+  const box = document.getElementById("chatMessages");
+  const div = document.createElement("div");
+  div.className = "msg-bubble " + (sender === "user" ? "msg-user" : "msg-rider");
+  div.innerText = text;
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+}
+
+function sendQuickMsg(text) {
+  appendChatMessage("You: " + text, "user");
+  setTimeout(() => appendChatMessage("Rider: Got it, updating my ETA now!", "rider"), 700);
+}
+
+function sendCustomMsg() {
+  const input = document.getElementById("chatInput");
+  const val = input.value.trim();
+  if (!val) return;
+  appendChatMessage("You: " + val, "user");
+  input.value = "";
+  setTimeout(() => appendChatMessage("Rider: Okay, see you at pickup!", "rider"), 700);
+}
+
+async function startLiveVideoAndPhoto() {
+  const timerEl = document.getElementById("verifyTimerText");
+  const previewVideo = document.getElementById("liveCamPreview");
+
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    alert("इस ब्राउज़र या कनेक्शन पर कैमरा एक्सेस उपलब्ध नहीं है। HTTPS या Chrome में खोलें।");
+    return;
+  }
+
+  try {
+    camStream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: "user" },
+      audio: false
+    });
+
+    previewVideo.srcObject = camStream;
+    previewVideo.style.display = "block";
+    recordedChunks = [];
+
+    setTimeout(() => {
+      const canvas = document.createElement("canvas");
+      canvas.width = previewVideo.videoWidth || 320;
+      canvas.height = previewVideo.videoHeight || 240;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(previewVideo, 0, 0, canvas.width, canvas.height);
+      const photoUrl = canvas.toDataURL("image/jpeg", 0.8);
+      registrationVerifiedMedia.photoDataUrl = photoUrl;
+      document.getElementById("capturedPhotoImg").src = photoUrl;
+    }, 600);
+
+    mediaRecorder = new MediaRecorder(camStream);
+    mediaRecorder.ondataavailable = (e) => {
+      if (e.data && e.data.size > 0) recordedChunks.push(e.data);
+    };
+
+    mediaRecorder.onstop = () => {
+      const videoBlob = new Blob(recordedChunks, { type: "video/webm" });
+      registrationVerifiedMedia.videoBlob = videoBlob;
+      const videoUrl = URL.createObjectURL(videoBlob);
+      document.getElementById("capturedVideoPlay").src = videoUrl;
+      document.getElementById("capturedMediaBox").style.display = "block";
+
+      stopCameraStream();
+      previewVideo.style.display = "none";
+      timerEl.innerText = "3-second live video & photo captured.";
+    };
+
+    mediaRecorder.start();
+
+    let secLeft = 3;
+    timerEl.innerText = `Recording live video... ${secLeft}s`;
+    const countdown = setInterval(() => {
+      secLeft--;
+      if (secLeft > 0) {
+        timerEl.innerText = `Recording live video... ${secLeft}s`;
+      } else {
+        clearInterval(countdown);
+        if (mediaRecorder && mediaRecorder.state === "recording") {
+          mediaRecorder.stop();
+        }
+      }
+    }, 1000);
+
+  } catch (err) {
+    alert("कैमरा अनुमति नहीं मिली या कैमरा व्यस्त है: " + err.message);
+  }
+}
+
+function stopCameraStream() {
+  if (camStream) {
+    camStream.getTracks().forEach(track => track.stop());
+    camStream = null;
+  }
+}
+
+function resetLiveCapture() {
+  stopCameraStream();
+  registrationVerifiedMedia = { photoDataUrl: null, videoBlob: null };
+  document.getElementById("liveCamPreview").style.display = "none";
+  document.getElementById("capturedMediaBox").style.display = "none";
+  document.getElementById("verifyTimerText").innerText = "";
+}
+
+function previewKycImage(inputEl, previewId) {
+  const file = inputEl.files && inputEl.files[0];
+  const imgEl = document.getElementById(previewId);
+  if (!file || !imgEl) return;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    imgEl.src = e.target.result;
+    imgEl.style.display = "block";
+  };
+  reader.readAsDataURL(file);
+}
+
+function sendAadhaarOtp() {
+  const rawAadhaar = document.getElementById("aadhaarNumberInput").value.replace(/\s+/g, "").trim();
+  if (!/^[0-9]{12}$/.test(rawAadhaar)) {
+    alert("कृपया पहले 12 अंकों का सही आधार नंबर डालें।");
+    return;
+  }
+  aadhaarOtpSent = true;
+  isAadhaarVerified = false;
+  document.getElementById("kycSaveStatus").innerText = "Test OTP sent. Enter any 4–6 digits and tap Verify Aadhaar OTP.";
+}
+
+function verifyAadhaarOtp() {
+  const otpVal = document.getElementById("aadhaarOtpInput").value.trim();
+  if (!aadhaarOtpSent) {
+    alert("कृपया पहले Send Aadhaar OTP दबाएँ।");
+    return;
+  }
+  if (!/^[0-9]{4,6}$/.test(otpVal)) {
+    alert("कृपया 4 से 6 अंकों का OTP डालें (जैसे 123456)।");
+    return;
+  }
+  isAadhaarVerified = true;
+  document.getElementById("verifyAadhaarBtn").innerText = "Aadhaar OTP Verified";
+  document.getElementById("kycSaveStatus").innerText = "Aadhaar OTP verification complete.";
+}
+
+function saveRiderKycDetails() {
+  const rcPhoto = document.getElementById("rcBookPhotoInput").files[0];
+  const vehNo = document.getElementById("vehicleRegInput").value.trim();
+  const dlPhoto = document.getElementById("dlPhotoInput").files[0];
+  const dlNo = document.getElementById("dlNumberInput").value.trim();
+  const rawAadhaar = document.getElementById("aadhaarNumberInput").value.replace(/\s+/g, "").trim();
+  const statusEl = document.getElementById("kycSaveStatus");
+
+  if (!rcPhoto) {
+    alert("कृपया RC बुक का फोटो चुनें।");
+    return;
+  }
+  if (!vehNo) {
+    alert("कृपया गाड़ी का रजिस्ट्रेशन नंबर डालें।");
+    return;
+  }
+  if (!dlPhoto) {
+    alert("कृपया ड्राइविंग लाइसेंस का फोटो चुनें।");
+    return;
+  }
+  if (!dlNo) {
+    alert("कृपया ड्राइविंग लाइसेंस नंबर डालें।");
+    return;
+  }
+  if (!/^[0-9]{12}$/.test(rawAadhaar)) {
+    alert("कृपया 12 अंकों का आधार नंबर डालें।");
+    return;
+  }
+  if (!isAadhaarVerified) {
+    alert("कृपया पहले Aadhaar OTP वेरीफाई करें।");
+    return;
+  }
+
+  const kycPayload = {
+    vehicleRegNumber: vehNo,
+    dlNumber: dlNo,
+    rcBookFileName: rcPhoto.name,
+    dlFileName: dlPhoto.name,
+    aadhaarVerified: true,
+    hasLivePhoto: Boolean(registrationVerifiedMedia.photoDataUrl),
+    hasLiveVideo: Boolean(registrationVerifiedMedia.videoBlob)
+  };
+
+  if (window.arFirebase && typeof window.arFirebase.saveRiderKyc === "function") {
+    window.arFirebase.saveRiderKyc(kycPayload).then(() => {
+      console.log("KYC saved to Firestore");
+    }).catch((err) => {
+      console.warn("Firestore KYC save skipped/failed:", err);
+    });
+  }
+
+  statusEl.innerText = `All verification details submitted for vehicle ${vehNo}.`;
+}
+
+document.addEventListener("click", function(e) {
+  if (!e.target.closest(".loc-group")) {
+    document.getElementById("pickupList").style.display = "none";
+    document.getElementById("dropList").style.display = "none";
+  }
+});
+</script>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import {
+    getAuth,
+    GoogleAuthProvider,
+    signInWithPopup,
+    signInWithRedirect,
+    signOut,
+    onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import {
+    getFirestore,
+    collection,
+    addDoc,
+    setDoc,
+    doc,
+    serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDBJXbTtr6l5NSjlsBErJsRWc8H47Tt-Gw",
+    authDomain: "andaman-ride.firebaseapp.com",
+    projectId: "andaman-ride",
+    storageBucket: "andaman-ride.firebasestorage.app",
+    messagingSenderId: "835001618568",
+    appId: "1:835001618568:web:c8152ab58e51f11f9e4f3d",
+    measurementId: "G-Z99LV2BVND"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const provider = new GoogleAuthProvider();
+
+  export function calculateAndamanFare(distanceKm, dateObj = new Date()) {
+    const km = Number(distanceKm) || 0;
+    const hour = dateObj.getHours();
+    const isNightSurge = hour >= 20 || hour < 5;
+    const baseFare = km * 50;
+    const surgeAmount = isNightSurge ? baseFare * 0.25 : 0;
+    const totalFare = Math.round(baseFare + surgeAmount);
+    const ownerCommission = Math.round(totalFare * 0.10);
+    const riderPayout = totalFare - ownerCommission;
+
+    return {
+      distanceKm: km,
+      isNightSurge,
+      baseFare,
+      surgeAmount,
+      totalFare,
+      ownerCommission,
+      riderPayout
+    };
+  }
+
+  export async function loginWithGoogle(role = "customer") {
+    try {
+      const result = await signInWithPopup(auth, provider);
+      await saveUserProfile(result.user, role);
+      return result.user;
+    } catch (err) {
+      if (err.code === "auth/popup-blocked" || err.code === "auth/cancelled-popup-request") {
+        sessionStorage.setItem("ar_pending_role", role);
+        await signInWithRedirect(auth, provider);
+        return null;
+      }
+      throw err;
+    }
+  }
+
+  export async function logoutUser() {
+    await signOut(auth);
+  }
+
+  export async function saveUserProfile(user, role = "customer") {
+    if (!user) return;
+    await setDoc(
+      doc(db, "users", user.uid),
+      {
+        uid: user.uid,
+        name: user.displayName || "",
+        email: user.email || "",
+        phone: user.phoneNumber || "",
+        role,
+        updatedAt: serverTimestamp()
+      },
+      { merge: true }
+    );
+  }
+
+  export async function saveRideRecord(rideData) {
+    const fare = calculateAndamanFare(rideData.distanceKm);
+    const docRef = await addDoc(collection(db, "rides"), {
+      ...rideData,
+      ...fare,
+      customerUid: auth.currentUser ? auth.currentUser.uid : null,
+      status: rideData.status || "booked",
+      createdAt: serverTimestamp()
+    });
+    return { id: docRef.id, ...fare };
+  }
+
+  export async function saveRiderKyc(kycData) {
+    const uid = auth.currentUser ? auth.currentUser.uid : `kyc_${Date.now()}`;
+    await setDoc(
+      doc(db, "rider_kyc", uid),
+      {
+        ...kycData,
+        uid,
+        verificationStatus: "pending_review",
+        updatedAt: serverTimestamp()
+      },
+      { merge: true }
+    );
+    return uid;
+  }
+
+  onAuthStateChanged(auth, async (user) => {
+    const pendingRole = sessionStorage.getItem("ar_pending_role");
+    if (user && pendingRole) {
+      sessionStorage.removeItem("ar_pending_role");
+      await saveUserProfile(user, pendingRole);
+    }
+    window.dispatchEvent(new CustomEvent("ar:auth-changed", { detail: { user } }));
+  });
+
+  window.arFirebase = {
+    auth,
+    db,
+    calculateAndamanFare,
+    loginWithGoogle,
+    logoutUser,
+    saveUserProfile,
+    saveRideRecord,
+    saveRiderKyc
+  };
+</script>
+</body>
+</html>
