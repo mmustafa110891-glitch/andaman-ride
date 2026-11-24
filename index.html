@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -1663,6 +1663,290 @@ document.addEventListener("click", function(e) {
   }
 });
 </script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import {
+    getAuth,
+    GoogleAuthProvider,
+    signInWithPopup,
+    signInWithRedirect,
+    signOut,
+    onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import {
+    getFirestore,
+    collection,
+    addDoc,
+    setDoc,
+    doc,
+    serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+  const firebaseConfig = {
+    apiKey: "AIzaSyDBJXbTtr6l5NSjlsBErJsRWc8H47Tt-Gw",
+    authDomain: "andaman-ride.firebaseapp.com",
+    projectId: "andaman-ride",
+    storageBucket: "andaman-ride.firebasestorage.app",
+    messagingSenderId: "835001618568",
+    appId: "1:835001618568:web:c8152ab58e51f11f9e4f3d",
+    measurementId: "G-Z99LV2BVND"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const provider = new GoogleAuthProvider();
+
+  // ₹50/km base, 25% night surge after 8:00 PM (20:00), 10% owner commission
+  export function calculateAndamanFare(distanceKm, dateObj = new Date()) {
+    const km = Number(distanceKm) || 0;
+    const hour = dateObj.getHours();
+    const isNightSurge = hour >= 20;
+    const baseFare = km * 50;
+    const surgeAmount = isNightSurge ? baseFare * 0.25 : 0;
+    const totalFare = Math.round(baseFare + surgeAmount);
+    const ownerCommission = Math.round(totalFare * 0.10);
+    const riderPayout = totalFare - ownerCommission;
+
+    return {
+      distanceKm: km,
+      isNightSurge,
+      baseFare,
+      surgeAmount,
+      totalFare,
+      ownerCommission,
+      riderPayout
+    };
+  }
+
+  // Google Sign-In (मोबाइल ब्राउज़र में पॉप-अप ब्लॉक हो तो Redirect का सहारा)
+  export async function loginWithGoogle(role = "customer") {
+    try {
+      const result = await signInWithPopup(auth, provider);
+      await saveUserProfile(result.user, role);
+      return result.user;
+    } catch (err) {
+      if (err.code === "auth/popup-blocked" || err.code === "auth/cancelled-popup-request") {
+        sessionStorage.setItem("ar_pending_role", role);
+        await signInWithRedirect(auth, provider);
+        return null;
+      }
+      throw err;
+    }
+  }
+
+  export async function logoutUser() {
+    await signOut(auth);
+  }
+
+  export async function saveUserProfile(user, role = "customer") {
+    if (!user) return;
+    await setDoc(
+      doc(db, "users", user.uid),
+      {
+        uid: user.uid,
+        name: user.displayName || "",
+        email: user.email || "",
+        phone: user.phoneNumber || "",
+        role,
+        updatedAt: serverTimestamp()
+      },
+      { merge: true }
+    );
+  }
+
+  // राइड रिकॉर्ड Firestore में सेव करें
+  export async function saveRideRecord(rideData) {
+    const fare = calculateAndamanFare(rideData.distanceKm);
+    const docRef = await addDoc(collection(db, "rides"), {
+      ...rideData,
+      ...fare,
+      customerUid: auth.currentUser ? auth.currentUser.uid : null,
+      status: rideData.status || "booked",
+      createdAt: serverTimestamp()
+    });
+    return { id: docRef.id, ...fare };
+  }
+
+  // राइडर KYC रिकॉर्ड Firestore में सेव करें
+  export async function saveRiderKyc(kycData) {
+    const uid = auth.currentUser ? auth.currentUser.uid : `kyc_${Date.now()}`;
+    await setDoc(
+      doc(db, "rider_kyc", uid),
+      {
+        ...kycData,
+        uid,
+        verificationStatus: "pending_review",
+        updatedAt: serverTimestamp()
+      },
+      { merge: true }
+    );
+    return uid;
+  }
+
+  // लॉगिन स्थिति (Auth State) सुनें
+  onAuthStateChanged(auth, async (user) => {
+    const pendingRole = sessionStorage.getItem("ar_pending_role");
+    if (user && pendingRole) {
+      sessionStorage.removeItem("ar_pending_role");
+      await saveUserProfile(user, pendingRole);
+    }
+    window.dispatchEvent(new CustomEvent("ar:auth-changed", { detail: { user } }));
+  });
+
+  // नॉन-मॉड्यूलर स्क्रिप्ट्स/बटनों से आसानी से इस्तेमाल करने के लिए
+  window.arFirebase = {
+    auth,
+    db,
+    calculateAndamanFare,
+    loginWithGoogle,
+    logoutUser,
+    saveUserProfile,
+    saveRideRecord,
+    saveRiderKyc
+  };
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import {
+    getAuth,
+    GoogleAuthProvider,
+    signInWithPopup,
+    signInWithRedirect,
+    signOut,
+    onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import {
+    getFirestore,
+    collection,
+    addDoc,
+    setDoc,
+    doc,
+    serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDBJXbTtr6l5NSjlsBErJsRWc8H47Tt-Gw",
+    authDomain: "andaman-ride.firebaseapp.com",
+    projectId: "andaman-ride",
+    storageBucket: "andaman-ride.firebasestorage.app",
+    messagingSenderId: "835001618568",
+    appId: "1:835001618568:web:c8152ab58e51f11f9e4f3d",
+    measurementId: "G-Z99LV2BVND"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const provider = new GoogleAuthProvider();
+
+  // ₹50/km base, 25% night surge after 8:00 PM (20:00), 10% owner commission
+  export function calculateAndamanFare(distanceKm, dateObj = new Date()) {
+    const km = Number(distanceKm) || 0;
+    const hour = dateObj.getHours();
+    const isNightSurge = hour >= 20;
+    const baseFare = km * 50;
+    const surgeAmount = isNightSurge ? baseFare * 0.25 : 0;
+    const totalFare = Math.round(baseFare + surgeAmount);
+    const ownerCommission = Math.round(totalFare * 0.10);
+    const riderPayout = totalFare - ownerCommission;
+
+    return {
+      distanceKm: km,
+      isNightSurge,
+      baseFare,
+      surgeAmount,
+      totalFare,
+      ownerCommission,
+      riderPayout
+    };
+  }
+
+  // Google Sign-In (मोबाइल ब्राउज़र में पॉप-अप ब्लॉक हो तो Redirect का सहारा)
+  export async function loginWithGoogle(role = "customer") {
+    try {
+      const result = await signInWithPopup(auth, provider);
+      await saveUserProfile(result.user, role);
+      return result.user;
+    } catch (err) {
+      if (err.code === "auth/popup-blocked" || err.code === "auth/cancelled-popup-request") {
+        sessionStorage.setItem("ar_pending_role", role);
+        await signInWithRedirect(auth, provider);
+        return null;
+      }
+      throw err;
+    }
+  }
+
+  export async function logoutUser() {
+    await signOut(auth);
+  }
+
+  export async function saveUserProfile(user, role = "customer") {
+    if (!user) return;
+    await setDoc(
+      doc(db, "users", user.uid),
+      {
+        uid: user.uid,
+        name: user.displayName || "",
+        email: user.email || "",
+        phone: user.phoneNumber || "",
+        role,
+        updatedAt: serverTimestamp()
+      },
+      { merge: true }
+    );
+  }
+
+  // राइड रिकॉर्ड Firestore में सेव करें
+  export async function saveRideRecord(rideData) {
+    const fare = calculateAndamanFare(rideData.distanceKm);
+    const docRef = await addDoc(collection(db, "rides"), {
+      ...rideData,
+      ...fare,
+      customerUid: auth.currentUser ? auth.currentUser.uid : null,
+      status: rideData.status || "booked",
+      createdAt: serverTimestamp()
+    });
+    return { id: docRef.id, ...fare };
+  }
+
+  // राइडर KYC रिकॉर्ड Firestore में सेव करें
+  export async function saveRiderKyc(kycData) {
+    const uid = auth.currentUser ? auth.currentUser.uid : `kyc_${Date.now()}`;
+    await setDoc(
+      doc(db, "rider_kyc", uid),
+      {
+        ...kycData,
+        uid,
+        verificationStatus: "pending_review",
+        updatedAt: serverTimestamp()
+      },
+      { merge: true }
+    );
+    return uid;
+  }
+
+  // लॉगिन स्थिति (Auth State) सुनें
+  onAuthStateChanged(auth, async (user) => {
+    const pendingRole = sessionStorage.getItem("ar_pending_role");
+    if (user && pendingRole) {
+      sessionStorage.removeItem("ar_pending_role");
+      await saveUserProfile(user, pendingRole);
+    }
+    window.dispatchEvent(new CustomEvent("ar:auth-changed", { detail: { user } }));
+  });
+
+  // नॉन-मॉड्यूलर स्क्रिप्ट्स/बटनों से आसानी से इस्तेमाल करने के लिए
+  window.arFirebase = {
+    auth,
+    db,
+    calculateAndamanFare,
+    loginWithGoogle,
+    logoutUser,
+    saveUserProfile,
+    saveRideRecord,
+    saveRiderKyc
+  };
+</script>
 </body>
 </html>
